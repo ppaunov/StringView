@@ -30,7 +30,7 @@ int sv_strip_right(StringView *sv);
 int sv_find_left_char(StringView *sv, char n);
 int sv_find_right_char(StringView *sv, char n);
 
-int sv_find_left_predicate(StringView *sv, void (*predicate)(char));
+int sv_find_left_predicate(StringView *sv, bool (*predicate)(char));
 
 bool sv_starts_with(StringView sv, StringView sv_other);
 bool sv_ends_with(StringView sv, StringView sv_other);
@@ -39,6 +39,7 @@ int sv_starts_with_predicate(StringView *sv, bool (*predicate)(char));
 int sv_ends_with_predicate(StringView *sv, bool (*predicate)(char));
 
 bool sv_whitespace_predicate(char n);
+bool sv_digit_predicate(char n);
 
 bool sv_compare(StringView sv, StringView sv_other);
 
@@ -222,6 +223,12 @@ bool sv_whitespace_predicate(char n)
 	return false;
 }
 
+bool sv_digit_predicate(char n)
+{
+
+    return isdigit(n) != 0;
+}
+
 int sv_strip_left(StringView *sv)
 {
 	int num_spaces = sv_starts_with_predicate(sv, sv_whitespace_predicate);
@@ -273,15 +280,6 @@ int sv_ends_with_predicate(StringView *sv, bool (*predicate)(char))
 {
 	if (sv->len == 0)
 		return 0;
-	// int count = 0;
-	// size_t i = sv->len;
-	// char n = sv->data[i];
-	// while (predicate(n))
-	// {
-	// 	count += 1;
-	// 	i -= 1;
-	// 	n = sv->data[i];
-	// }
 	int count = 0;
 	for (size_t i = sv->len - 1; i >= 0 && predicate(sv->data[i]); i--)
 		count += 1;
